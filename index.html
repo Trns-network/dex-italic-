@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Prelievo Postpay</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 400px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+      padding: 24px;
+      position: relative;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      width: 120px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 16px;
+      color: #0078D4;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .summary {
+      margin-top: 20px;
+      font-size: 15px;
+      background: #f0f8ff;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .confirm-btn {
+      background-color: #0078D4;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0078D4;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Postepay_logo.svg/2560px-Postepay_logo.svg.png" alt="Postpay Logo">
+    </div>
+    <h2>Richiesta di Prelievo</h2>
+    <label for="name">Nome del Titolare</label>
+    <input type="text" id="name" placeholder="Mario Rossi">
+
+    <label for="iban">Numero IBAN</label>
+    <input type="text" id="iban" placeholder="IT60X0542811101000000123456">
+
+    <div class="summary">
+      Importo: <strong>€500</strong><br>
+      Commissione: <strong>€30</strong><br>
+      Totale addebitato: <strong>€530</strong>
+    </div>
+
+    <button class="confirm-btn" onclick="showModal()">Conferma Prelievo</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent">
+      <div class="spinner" id="spinner"></div>
+      <p id="modalText">Elaborazione in corso...</p>
+    </div>
+  </div>
+
+  <script>
+    function showModal() {
+      const modal = document.getElementById('modal');
+      const modalText = document.getElementById('modalText');
+      const spinner = document.getElementById('spinner');
+      modal.style.display = 'flex';
+      modalText.textContent = 'Elaborazione in corso...';
+      spinner.style.display = 'block';
+
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        modalText.innerHTML = `
+          ✅ Prelievo confermato!<br>
+          €500 inviati a:<br><br>
+          <strong>${document.getElementById('name').value}</strong><br>
+          <code>${document.getElementById('iban').value}</code><br><br>
+          Commissione applicata: €30
+        `;
+      }, 3000);
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
