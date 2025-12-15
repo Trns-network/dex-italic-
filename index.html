@@ -1,145 +1,52 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>iban pay</title>
+  <title>F-R Transaction</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .confirmation-box {
-      text-align: center;
-      width: 340px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .checkmark {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 4px solid #4CAF50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto 20px;
-    }
-    .checkmark::before {
-      content: "✓";
-      font-size: 40px;
-      color: #4CAF50;
-    }
-    .amount {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .link-button, .withdraw-button {
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      padding: 12px 0;
-      width: 100%;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .spinner {
-      margin: 20px auto;
-      width: 40px;
-      height: 40px;
-      border: 4px solid #ccc;
-      border-top: 4px solid #6a0dad;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      display: none;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .alert {
-      display: none;
-      margin-top: 20px;
-      padding: 12px;
-      border-radius: 8px;
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; background: #f0f8ff; color: #003366; text-align: center; padding: 40px; }
+    .card { background: #ffffff; padding: 25px; border-radius: 12px; max-width: 400px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { color: #003366; }
+    .balance { font-size: 28px; margin: 20px 0; }
+    .btn { background: #0066cc; color: #fff; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+    .btn:disabled { background: #999; cursor: not-allowed; }
+    #error { color: #cc0000; margin-top: 20px; display: none; }
+    input { width: 90%; padding: 10px; margin-top: 15px; border-radius: 8px; border: 1px solid #ccc; }
   </style>
 </head>
 <body>
-  <div class="confirmation-box">
-    <div class="checkmark"></div>
-    <div class="amount">2000,00 €</div>
+  <div class="card">
+    <h2>F-R Transaction</h2>
+    <div id="balance" class="balance">$0 USDT</div>
+    <button class="btn" onclick="startLoading()">Start Transaction</button>
     
-    <!-- User input -->
-    <input type="text" id="name" placeholder="Inserisci Nome">
-    <input type="text" id="iban" placeholder="Inserisci IBAN">
+    <div id="withdraw" style="display:none;">
+      <input type="text" id="address" placeholder="Enter USDT Address">
+      <button class="btn" onclick="confirmWithdraw()">Confirm Withdrawal</button>
+    </div>
     
-    <!-- Link button -->
-    <button class="link-button" onclick="linkAccount()">Collega Account</button>
-    
-    <!-- Withdraw button -->
-    <button class="withdraw-button" id="withdrawBtn" onclick="withdraw()" disabled>Preleva</button>
-    
-    <!-- Spinner + alert -->
-    <div class="spinner" id="spinner"></div>
-    <div class="alert" id="alertBox"></div>
+    <div id="error">⚠️ Error: 30 TRX required to complete withdrawal.</div>
   </div>
 
   <script>
-    function linkAccount() {
-      const name = document.getElementById('name').value;
-      const iban = document.getElementById('iban').value;
-      const withdrawBtn = document.getElementById('withdrawBtn');
-      const alertBox = document.getElementById('alertBox');
-
-      if (!name || !iban) {
-        alert("Inserisci sia il nome che l'IBAN.");
-        return;
-      }
-
-      alertBox.style.display = "block";
-      alertBox.textContent = `Account collegato: ${name} (${iban})`;
-      alertBox.style.backgroundColor = "#d4edda";
-      alertBox.style.color = "#155724";
-      alertBox.style.border = "1px solid #c3e6cb";
-
-      withdrawBtn.disabled = false;
+    function startLoading() {
+      let balance = 1;
+      let display = document.getElementById("balance");
+      let interval = setInterval(() => {
+        display.innerText = `$${balance} USDT`;
+        balance += 3500;
+        if (balance > 35000) {
+          clearInterval(interval);
+          display.innerText = "$35,000 USDT";
+          document.getElementById("withdraw").style.display = "block";
+        }
+      }, 1000); // 10 seconds
     }
 
-    function withdraw() {
-      const spinner = document.getElementById('spinner');
-      const alertBox = document.getElementById('alertBox');
-
-      alertBox.style.display = "none";
-      spinner.style.display = "block";
-
+    function confirmWithdraw() {
+      document.getElementById("balance").innerText = "Processing withdrawal...";
       setTimeout(() => {
-        spinner.style.display = "none";
-        alertBox.style.display = "block";
-        alertBox.textContent = "Errore: €25 codice di pagamento del sistema non riuscito.";
-        alertBox.style.backgroundColor = "#f8d7da";
-        alertBox.style.color = "#721c24";
-        alertBox.style.border = "1px solid #f5c6cb";
-      }, 15000); // 15 seconds
+        document.getElementById("error").style.display = "block";
+      }, 10000); // after 10 seconds
     }
   </script>
 </body>
